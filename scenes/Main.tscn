@@ -1,0 +1,152 @@
+[gd_scene format=3 uid="uid://bmx5frihuh16p"]
+
+[ext_resource type="Script" uid="uid://bawq5kxw0oton" path="res://scripts/GameMaster.gd" id="1_gamemaster"]
+[ext_resource type="Script" uid="uid://kwphv6kh21dm" path="res://scripts/LogicManager.gd" id="2_logicmanager"]
+[ext_resource type="Script" uid="uid://qwc63xftuaci" path="res://scripts/AudioManager.gd" id="3_audiomanager"]
+[ext_resource type="Shader" uid="uid://crtshader" path="res://shaders/CRT.gdshader" id="4_crtshader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("4_crtshader")
+shader_parameter/scanline_intensity = 0.3
+shader_parameter/scanline_count = 720.0
+shader_parameter/curvature = 0.02
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/chromatic_aberration = 0.8
+shader_parameter/noise_intensity = 0.05
+shader_parameter/shake_intensity = 0.0
+shader_parameter/flicker_intensity = 0.02
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_gamemaster")
+
+[node name="LogicManager" type="Node" parent="."]
+script = ExtResource("2_logicmanager")
+
+[node name="AudioManager" type="Node" parent="."]
+script = ExtResource("3_audiomanager")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Background" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MainLayout" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 25.0
+offset_right = -30.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="Header" type="HBoxContainer" parent="CanvasLayer/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ScriptName" type="Label" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "[ 剧本：平田的世界 ]"
+
+[node name="Spacer1" type="Control" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Difficulty" type="Label" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "[ 难度：普通 ]"
+
+[node name="Spacer2" type="Control" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TerrorValue" type="Label" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "[ 惊吓值：0% ]"
+
+[node name="Spacer3" type="Control" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Status" type="Label" parent="CanvasLayer/MainLayout/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "[ 状态：理智 ]"
+
+[node name="Divider_Top" type="HSeparator" parent="CanvasLayer/MainLayout"]
+layout_mode = 2
+
+[node name="SenseBox" type="RichTextLabel" parent="CanvasLayer/MainLayout"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+bbcode_enabled = true
+text = "[ 感官捕捉 ]
+>> 房间里太安静了，安静得你能听见墙壁里某种木质纤维断裂的声音。"
+fit_content = true
+scroll_active = false
+
+[node name="Divider_Middle" type="HSeparator" parent="CanvasLayer/MainLayout"]
+layout_mode = 2
+
+[node name="StoryLog" type="RichTextLabel" parent="CanvasLayer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "(系统提示：欢迎来到平田的家。)
+
+这里是一个普通的日式客厅。
+
+四面是略显斑驳的土墙，脚下的榻榻米散发着陈腐的草席味。
+一台笨重的显像管电视占据了角落，屏幕满是闪烁的灰色雪花。
+
+几张发黄的报纸被随意地丢弃在低矮的茶几上，
+边缘卷曲，像是被火燎过，又像是被某种液体浸透后干涸的痕迹。
+
+你感觉到一种强烈的违和感，仿佛墙壁后的阴影正在蠕动。
+
+> 1. 观察报纸
+> 2. 走向电视机
+> 3. 尝试拉开玄关的大门"
+scroll_following = true
+
+[node name="Divider_Bottom" type="HSeparator" parent="CanvasLayer/MainLayout"]
+layout_mode = 2
+
+[node name="InputArea" type="HBoxContainer" parent="CanvasLayer/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Prefix" type="Label" parent="CanvasLayer/MainLayout/InputArea"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "[ 指令输入 ] >"
+
+[node name="CommandInput" type="LineEdit" parent="CanvasLayer/MainLayout/InputArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+placeholder_text = ""
+flat = true
+caret_blink = true
+
+[node name="CRT_Overlay" type="ColorRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_crt")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[connection signal="text_submitted" from="CanvasLayer/MainLayout/InputArea/CommandInput" to="." method="_on_command_input_text_submitted"]
