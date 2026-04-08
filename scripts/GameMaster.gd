@@ -111,17 +111,25 @@ func _initialize_game():
 	_update_header()
 	_append_system_message("欢迎来到平田的世界。输入 'help' 查看可用指令。")
 	
+	# 从剧本数据中获取起始节点
+	var start_node = logic_manager.get_start_node()
+	
 	# 更新感官区
 	_update_sense_box()
 	
 	# 加载初始场景并显示描述（选项在打字机完成后显示）
-	var scene_desc = logic_manager.load_scene("living_room")
+	var scene_desc = logic_manager.load_scene(start_node)
 	append_story_text(scene_desc, true, _show_current_options)
 	
 	# 输入框自动获取焦点
 	command_input.grab_focus()
 
 func _show_current_options():
+	# 检查是否有自动跳转
+	if logic_manager.has_auto_transition():
+		_check_auto_transition()
+		return
+	
 	# 显示当前场景的选项
 	var options = logic_manager.get_current_options()
 	if options.size() > 0:
@@ -129,6 +137,21 @@ func _show_current_options():
 		for i in range(options.size()):
 			options_text += "> %d. %s\n" % [i + 1, options[i]]
 		story_log.text += options_text
+
+func _check_auto_transition():
+	# 获取自动跳转的目标场景和延迟时间
+	var next_scene = logic_manager.get_auto_next_scene()
+	var delay = logic_manager.get_auto_delay()
+	
+	# 延迟后自动执行场景切换
+	var timer = get_tree().create_timer(delay)
+	timer.timeout.connect(func(): _execute_auto_transition(next_scene))
+
+func _execute_auto_transition(scene_id: String):
+	# 加载并显示下一个场景
+	var scene_desc = logic_manager.load_scene(scene_id)
+	_update_sense_box()
+	append_story_text(scene_desc, true, _show_current_options)
 
 func _update_header():
 	script_name_label.text = "[ 剧本：%s ]" % story_title
@@ -140,7 +163,8 @@ func _update_header():
 
 func append_story_text(text: String, with_typewriter: bool = true, on_complete: Callable = Callable()):
 	if with_typewriter and not typewriter_active:
-		# 开始打字机效果
+		# 开始打字机效果，禁用输入框
+		command_input.editable = false
 		current_text = _apply_terror_effects(text)
 		visible_char_index = 0
 		typewriter_active = true
@@ -176,6 +200,9 @@ func _on_typewriter_tick():
 		if typewriter_callback.is_valid():
 			typewriter_callback.call()
 			typewriter_callback = Callable()
+		# 重新启用输入框并获取焦点
+		command_input.editable = true
+		command_input.grab_focus()
 
 func _apply_terror_effects(text: String) -> String:
 	var result = text
@@ -211,9 +238,6 @@ func _on_command_input_text_submitted(new_text: String):
 	
 	# 处理指令
 	_process_command(new_text.strip_edges())
-	
-	# 保持焦点
-	command_input.grab_focus()
 
 func _process_command(command: String):
 	command = command.to_lower()

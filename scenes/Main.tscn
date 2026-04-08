@@ -90,8 +90,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
 bbcode_enabled = true
-text = "[ 感官捕捉 ]
->> 房间里太安静了，安静得你能听见墙壁里某种木质纤维断裂的声音。"
+text = ""
 fit_content = true
 scroll_active = false
 
@@ -102,21 +101,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "(系统提示：欢迎来到平田的家。)
-
-这里是一个普通的日式客厅。
-
-四面是略显斑驳的土墙，脚下的榻榻米散发着陈腐的草席味。
-一台笨重的显像管电视占据了角落，屏幕满是闪烁的灰色雪花。
-
-几张发黄的报纸被随意地丢弃在低矮的茶几上，
-边缘卷曲，像是被火燎过，又像是被某种液体浸透后干涸的痕迹。
-
-你感觉到一种强烈的违和感，仿佛墙壁后的阴影正在蠕动。
-
-> 1. 观察报纸
-> 2. 走向电视机
-> 3. 尝试拉开玄关的大门"
+text = ""
 scroll_following = true
 
 [node name="Divider_Bottom" type="HSeparator" parent="CanvasLayer/MainLayout"]

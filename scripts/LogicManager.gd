@@ -11,6 +11,7 @@ var scene_history: Array[String] = []
 # 剧本数据
 var story_data: Dictionary = {}
 var nodes: Dictionary = {}
+var start_node: String = "living_room"  # 默认起始节点
 
 # 玩家状态
 var player_inventory: Array[String] = []
@@ -35,13 +36,19 @@ func _load_story_data():
 		if error == OK:
 			story_data = json.get_data()
 			nodes = story_data.get("nodes", {})
-			print("剧本数据加载成功，共 %d 个场景" % nodes.size())
+			start_node = story_data.get("start_node", "living_room")
+			print("剧本数据加载成功，共 %d 个场景，起始节点: %s" % [nodes.size(), start_node])
 		else:
 			push_error("JSON解析错误: " + json.get_error_message())
+			# 解析失败时使用默认数据
+			_create_default_story()
 	else:
 		push_error("剧本文件不存在: " + file_path)
 		# 使用默认数据
 		_create_default_story()
+
+func get_start_node() -> String:
+	return start_node
 
 func _create_default_story():
 	# 默认剧本数据（备用）
@@ -135,10 +142,14 @@ func load_scene(scene_id: String) -> String:
 	# 执行进入事件
 	_execute_enter_events(current_scene_data.get("on_enter", ""))
 	
-	# 构建场景描述
+	# 构建场景描述：优先使用 narration（剧情旁白），否则使用 description
+	var narration = current_scene_data.get("narration", "")
 	var description = current_scene_data.get("description", "")
 	
-	return description
+	if narration != "":
+		return narration + "\n\n" + description
+	else:
+		return description
 
 func get_current_sense() -> String:
 	return current_scene_data.get("sense", "")
@@ -281,3 +292,12 @@ func has_item(item_name: String) -> bool:
 func add_clue(clue: String):
 	if clue not in discovered_clues:
 		discovered_clues.append(clue)
+
+func has_auto_transition() -> bool:
+	return current_scene_data.get("auto_next", "") != ""
+
+func get_auto_next_scene() -> String:
+	return current_scene_data.get("auto_next", "")
+
+func get_auto_delay() -> float:
+	return current_scene_data.get("auto_delay", 2.0)
