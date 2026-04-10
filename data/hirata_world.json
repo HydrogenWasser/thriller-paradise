@@ -60,7 +60,8 @@
       "options": {
         "返回": "street_start_post_keys"
       },
-      "add_item": "三把钥匙"
+      "add_item": "三把钥匙",
+      "add_flag": "street_examine_keys_done"
     },
     "street_start_post_keys": {
       "chapter": "act1",
@@ -641,9 +642,29 @@
       "chapter": "act4",
       "sense": "最下面的抽屉被锁死了。",
       "description": "你试着拉其他抽屉。最后发现由于不知名原因你口袋里又出现了刚才消失的三把钥匙。你直接用其中一把开锁。",
+      "hidden_breaks": [
+        {
+          "intent": "question_keys",
+          "keywords": ["钥匙", "哪来的", "消失", "第三把", "不对", "数量", "车锁"],
+          "requires_flag": "street_examine_keys_done",
+          "break_text": "\n[color=red]【系统警告：检测到逻辑悖论，理智协议强制覆写】[/color]\n\n[s]你直接用其中一把开锁。[/s]\n\n一阵锥心刺骨的头痛袭来。你突然意识到这根本不合理。台风摧毁了你的家，你住在连玻璃都没有的废旧长屋，为什么你身上会带着三把做工精密的钥匙？\n\n那根本不是这间办公室的钥匙，那是......你昨天夜里，强行从某个带血的制服口袋里拽出来的！",
+          "next_node": "office_memory_flashback",
+          "terror_change": -20,
+          "reasoning_change": 15
+        }
+      ],
       "options": {
         "翻找上锁的抽屉": "office_unlock"
       }
+    },
+    "office_memory_flashback": {
+      "chapter": "act4",
+      "sense": "断裂的记忆像玻璃碴一样扎进意识里。",
+      "narration": "[color=red]幻觉被撕开了一道口子。[/color]",
+      "description": "你看见自己跪在暴雨后的泥地里，手指因为用力过猛而发白。那件制服沉得可怕，口袋里那串钥匙带着湿冷的血腥味。你不是第一次摸到它们，你只是一直拒绝想起它们真正的来处。",
+      "auto_next": "office_unlock",
+      "auto_delay": 2.0,
+      "options": {}
     },
     "office_unlock": {
       "chapter": "act4",
